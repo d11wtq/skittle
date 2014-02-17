@@ -1,34 +1,12 @@
 #!/bin/bash
 
-example() {
-  is_met() {
-    [[ -f ./example.txt ]]
-  }
-
-  meet() {
-    touch ./example.txt
-  }
-
-  other() {
-    is_met() {
-      [[ -f ./other.txt ]]
-    }
-
-    meet() {
-      touch ./other.txt
-    }
-  }
-
-  requires other
-}
-
-requires() {
+needs() {
   (
   if [[ `type -t $1` ]]
   then
     $@
   else
-    echo "Error: Cannot find dependency $1"
+    echo "Error: Cannot find dependency '$1'"
     exit 1
   fi
 
@@ -41,11 +19,11 @@ requires() {
 
     if ! is_met
     then
-      echo "Error: Dependency $1 still not met"
+      echo "Error: Dependency '$1' not met"
       exit 1
     fi
   fi
   )
 }
 
-requires $@
+needs $@
