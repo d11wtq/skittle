@@ -1,4 +1,5 @@
 example() {
+  echo "In example"
   is_met() {
     [[ -f ./example.txt ]]
   }
@@ -7,15 +8,6 @@ example() {
     touch ./example.txt
   }
 
-  other() {
-    is_met() {
-      [[ -f ./other.txt ]]
-    }
-
-    meet() {
-      touch ./other.txt
-    }
-  }
-
+  needs broken
   needs other
 }
