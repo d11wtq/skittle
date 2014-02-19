@@ -17,7 +17,25 @@ needs() {
     set +e
   }
 
+  branch() {
+    [[ -z $depth ]] && depth=0 || ((depth++))
+    for ((i=0; i<$depth; i++))
+    do
+      echo -n "  "
+    done
+    echo "$1"
+  }
+
+  pass() {
+    true
+  }
+
+  fail() {
+    true
+  }
+
   (
+  branch $1
   load_dep $1
 
   if [[ `type -t $1` ]]

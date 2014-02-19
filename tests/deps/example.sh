@@ -1,5 +1,4 @@
 example() {
-  echo "In example"
   is_met() {
     [[ -f ./example.txt ]]
   }
