@@ -36,15 +36,33 @@ needs() {
       echo -n "+-"
     fi
 
-    echo "+ $1"
+    echo -e "+ \033[1m$1\033[0m"
   }
 
   pass() {
-    true
+    for (( i=0; i<depth; i++ ))
+    do
+      echo -n "| "
+    done
+    echo "| "
+    for (( i=0; i<depth; i++ ))
+    do
+      echo -n "| "
+    done
+    echo -e "+ \033[1m[\033[32mok\033[0;1m]\033[0m $1"
   }
 
   fail() {
-    true
+    for (( i=0; i<depth; i++ ))
+    do
+      echo -n "| "
+    done
+    echo "| "
+    for (( i=0; i<depth; i++ ))
+    do
+      echo -n "| "
+    done
+    echo -e "+ \033[1m[\033[31mfail\033[0;1m]\033[0m $1"
   }
 
   (
@@ -55,6 +73,7 @@ needs() {
   then
     exit_on_error $@
   else
+    fail $1
     echo "Error: Cannot find dependency '$1'"
     exit 1
   fi
@@ -68,10 +87,13 @@ needs() {
 
     if ! is_met
     then
+      fail $1
       echo "Error: Dependency '$1' not met"
       exit 1
     fi
   fi
+
+  pass $1
 
   unset $1
   unset is_met

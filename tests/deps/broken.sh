@@ -1,6 +1,7 @@
 broken() {
   foo() {
     bar() {
+      sleep 2
       true
     }
 
@@ -9,7 +10,12 @@ broken() {
 
   zip() {
     button() {
+      sleep 2
       true
+    }
+
+    is_met() {
+      false
     }
 
     needs button
