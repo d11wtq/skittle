@@ -18,12 +18,25 @@ needs() {
   }
 
   branch() {
-    [[ -z $depth ]] && depth=0 || ((depth++))
-    for ((i=0; i<$depth; i++))
-    do
-      echo -n "  "
-    done
-    echo "$1"
+    [[ -z $depth ]] && depth=0 || (( depth++ ))
+
+    if [[ $depth -gt 0 ]]
+    then
+      for (( i=0; i<depth; i++ ))
+      do
+        echo -n "| "
+      done
+      echo
+
+      for (( i=0; i<depth-1; i++ ))
+      do
+        echo -n "| "
+      done
+
+      echo -n "+-"
+    fi
+
+    echo "+ $1"
   }
 
   pass() {

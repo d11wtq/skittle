@@ -1,6 +1,18 @@
 broken() {
   foo() {
-    true
+    bar() {
+      true
+    }
+
+    needs bar
+  }
+
+  zip() {
+    button() {
+      true
+    }
+
+    needs button
   }
 
   is_met() {
@@ -12,4 +24,5 @@ broken() {
   }
 
   needs foo
+  needs zip
 }
