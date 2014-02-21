@@ -1,97 +1,107 @@
 #!/bin/bash
 
-arr_branches=()
-num_branches=0
+N_arr_branches=()
+N_branch_depth=-1
 
-needs() {
-  load_dep() {
-    if [[ ! `type -t $1` ]]
+N_PASS="\033[1m[\033[32mok\033[0;1m]\033[0m"
+N_FAIL="\033[1m[\033[31mfail\033[0;1m]\033[0m"
+
+N_exit_on_error() {
+  set -e
+  $@
+  set +e
+}
+
+N_include_dep() {
+  if [[ ! `type -t $1` ]]
+  then
+    if [[ -f "$PWD/deps/$1.sh" ]]
     then
-      if [[ -f "$PWD/deps/$1.sh" ]]
-      then
-        source "$PWD/deps/$1.sh"
-      fi
+      source "$PWD/deps/$1.sh"
     fi
-  }
+  fi
+}
 
-  exit_on_error() {
-    set -e
-    $@
-    set +e
-  }
+N_push_branch() {
+  ((N_branch_depth++))
+  N_arr_branches+=($1)
+}
 
-  branch_down() {
-    for (( i=0; i<num_branches; i++ ))
+N_is_defined() {
+  type -t $1 >/dev/null
+}
+
+N_draw_branch() {
+  if [[ $N_branch_depth -gt 0 ]]
+  then
+    N_draw_branch_down ""
+
+    for ((i=0; i<N_branch_depth-1; i++))
     do
       echo -n "| "
     done
-    echo -e $1
-  }
 
-  branch() {
-    num_branches=${#arr_branches[@]}
-    arr_branches+=($1)
-
-    if [[ $num_branches -gt 0 ]]
-    then
-      branch_down ""
-
-      for (( i=0; i<num_branches-1; i++ ))
-      do
-        echo -n "| "
-      done
-
-      echo -n "+-"
-    fi
-
-    echo -e "+ \033[1m$1\033[0m"
-  }
-
-  pass() {
-    branch_down "| "
-    branch_down "+ \033[1m[\033[32mok\033[0;1m]\033[0m $1"
-  }
-
-  fail() {
-    branch_down "| "
-    branch_down "+ \033[1m[\033[31mfail\033[0;1m]\033[0m $1"
-  }
-
-  fail_unwind() {
-    for ((; num_branches>=0; num_branches--))
-    do
-      fail ${arr_branches[$num_branches]}
-    done
-
-    echo "Error: $1"
-    exit 1
-  }
-
-  (
-  branch $1
-  load_dep $1
-
-  if [[ `type -t $1` ]]
-  then
-    exit_on_error $@
-  else
-    fail_unwind "Cannot find dependency '$1'"
+    echo -n "+-"
   fi
 
-  if [[ `type -t is_met` ]] && ! is_met
+  echo -e "+ \033[1m$1\033[0m"
+}
+
+N_draw_branch_down() {
+  for ((i=0; i<N_branch_depth; i++))
+  do
+    echo -n "| "
+  done
+  echo -e $1
+}
+
+N_draw_pass() {
+  N_draw_branch_down "| "
+  N_draw_branch_down "\\ $N_PASS $1"
+}
+
+N_draw_fail() {
+  N_draw_branch_down "| "
+  N_draw_branch_down "\\ $N_FAIL $1"
+}
+
+N_draw_fail_unwind() {
+  for ((; N_branch_depth>=0; N_branch_depth--))
+  do
+    N_draw_fail ${N_arr_branches[$N_branch_depth]}
+  done
+
+  echo "Error: $1"
+  exit 1
+}
+
+needs() {
+  (
+  N_push_branch $1
+  N_draw_branch $1
+  N_include_dep $1
+
+  if N_is_defined $1
   then
-    if [[ `type -t meet` ]]
+    N_exit_on_error $@
+  else
+    N_draw_fail_unwind "Cannot find dependency '$1'"
+  fi
+
+  if N_is_defined is_met && ! is_met
+  then
+    if N_is_defined meet
     then
       meet
     fi
 
     if ! is_met
     then
-      fail_unwind "Error: Dependency '$1' not met"
+      N_draw_fail_unwind "Dependency '$1' not met"
     fi
   fi
 
-  pass $1
+  N_draw_pass $1
 
   unset $1
   unset is_met

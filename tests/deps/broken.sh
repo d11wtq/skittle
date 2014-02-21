@@ -15,7 +15,7 @@ broken() {
     }
 
     is_met() {
-      false
+      true
     }
 
     needs button
