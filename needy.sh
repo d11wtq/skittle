@@ -1,6 +1,8 @@
 #!/bin/bash
 
 needs() {
+  depth=0
+
   load_dep() {
     if [[ ! `type -t $1` ]]
     then
@@ -17,16 +19,21 @@ needs() {
     set +e
   }
 
+  branch_down() {
+    for (( i=0; i<depth; i++ ))
+    do
+      echo -n "| "
+    done
+    echo -e $1
+  }
+
   branch() {
-    [[ -z $depth ]] && depth=0 || (( depth++ ))
+    depth=${#branches[@]}
+    branches+=($1)
 
     if [[ $depth -gt 0 ]]
     then
-      for (( i=0; i<depth; i++ ))
-      do
-        echo -n "| "
-      done
-      echo
+      branch_down ""
 
       for (( i=0; i<depth-1; i++ ))
       do
@@ -40,29 +47,13 @@ needs() {
   }
 
   pass() {
-    for (( i=0; i<depth; i++ ))
-    do
-      echo -n "| "
-    done
-    echo "| "
-    for (( i=0; i<depth; i++ ))
-    do
-      echo -n "| "
-    done
-    echo -e "+ \033[1m[\033[32mok\033[0;1m]\033[0m $1"
+    branch_down "| "
+    branch_down "+ \033[1m[\033[32mok\033[0;1m]\033[0m $1"
   }
 
   fail() {
-    for (( i=0; i<depth; i++ ))
-    do
-      echo -n "| "
-    done
-    echo "| "
-    for (( i=0; i<depth; i++ ))
-    do
-      echo -n "| "
-    done
-    echo -e "+ \033[1m[\033[31mfail\033[0;1m]\033[0m $1"
+    branch_down "| "
+    branch_down "+ \033[1m[\033[31mfail\033[0;1m]\033[0m $1"
   }
 
   (
@@ -73,7 +64,11 @@ needs() {
   then
     exit_on_error $@
   else
-    fail $1
+    for ((; depth>=0; depth--))
+    do
+      fail ${branches[$depth]}
+    done
+
     echo "Error: Cannot find dependency '$1'"
     exit 1
   fi
@@ -87,7 +82,10 @@ needs() {
 
     if ! is_met
     then
-      fail $1
+      for ((; depth>=0; depth--))
+      do
+        fail ${branches[$depth]}
+      done
       echo "Error: Dependency '$1' not met"
       exit 1
     fi
