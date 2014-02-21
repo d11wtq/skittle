@@ -1,8 +1,9 @@
 #!/bin/bash
 
-needs() {
-  depth=0
+arr_branches=()
+num_branches=0
 
+needs() {
   load_dep() {
     if [[ ! `type -t $1` ]]
     then
@@ -20,7 +21,7 @@ needs() {
   }
 
   branch_down() {
-    for (( i=0; i<depth; i++ ))
+    for (( i=0; i<num_branches; i++ ))
     do
       echo -n "| "
     done
@@ -28,14 +29,14 @@ needs() {
   }
 
   branch() {
-    depth=${#branches[@]}
-    branches+=($1)
+    num_branches=${#arr_branches[@]}
+    arr_branches+=($1)
 
-    if [[ $depth -gt 0 ]]
+    if [[ $num_branches -gt 0 ]]
     then
       branch_down ""
 
-      for (( i=0; i<depth-1; i++ ))
+      for (( i=0; i<num_branches-1; i++ ))
       do
         echo -n "| "
       done
@@ -56,6 +57,16 @@ needs() {
     branch_down "+ \033[1m[\033[31mfail\033[0;1m]\033[0m $1"
   }
 
+  fail_unwind() {
+    for ((; num_branches>=0; num_branches--))
+    do
+      fail ${arr_branches[$num_branches]}
+    done
+
+    echo "Error: $1"
+    exit 1
+  }
+
   (
   branch $1
   load_dep $1
@@ -64,13 +75,7 @@ needs() {
   then
     exit_on_error $@
   else
-    for ((; depth>=0; depth--))
-    do
-      fail ${branches[$depth]}
-    done
-
-    echo "Error: Cannot find dependency '$1'"
-    exit 1
+    fail_unwind "Cannot find dependency '$1'"
   fi
 
   if [[ `type -t is_met` ]] && ! is_met
@@ -82,12 +87,7 @@ needs() {
 
     if ! is_met
     then
-      for ((; depth>=0; depth--))
-      do
-        fail ${branches[$depth]}
-      done
-      echo "Error: Dependency '$1' not met"
-      exit 1
+      fail_unwind "Error: Dependency '$1' not met"
     fi
   fi
 
