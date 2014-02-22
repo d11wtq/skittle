@@ -2,8 +2,6 @@
 
 A tiny tool for simplifying system provisioning with simple bash scripts.
 
-> curl -O https://raw.github.com/d11wtq/skittle/master/bin/skittle
-
 ## Overview
 
 Skittle makes it really easy to script install procedures, configure computers
