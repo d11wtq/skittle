@@ -13,12 +13,17 @@ N_exit_on_error() {
 }
 
 N_include_dep() {
-  if [[ ! `type -t $1` ]]
+  if ! N_is_defined $1
   then
-    if [[ -f "$PWD/deps/$1.sh" ]]
-    then
-      source "$PWD/deps/$1.sh"
-    fi
+    paths=("$PWD/deps/$1.sh" "$HOME/needy-deps/$1.sh")
+    for path in $paths
+    do
+      if [[ -f $path ]]
+      then
+        source $path
+        break
+      fi
+    done
   fi
 }
 
@@ -65,7 +70,7 @@ N_draw_fail() {
   N_draw_branch_down "\\ $N_FAIL $1"
 }
 
-N_draw_fail_unwind() {
+N_fail_unwind() {
   for ((; N_branch_depth>=0; N_branch_depth--))
   do
     N_draw_fail ${N_arr_branches[$N_branch_depth]}
@@ -85,7 +90,7 @@ needs() {
   then
     N_exit_on_error $@
   else
-    N_draw_fail_unwind "Cannot find dependency '$1'"
+    N_fail_unwind "Cannot find dependency '$1'"
   fi
 
   if N_is_defined is_met && ! is_met
@@ -97,7 +102,7 @@ needs() {
 
     if ! is_met
     then
-      N_draw_fail_unwind "Dependency '$1' not met"
+      N_fail_unwind "Dependency '$1' not met"
     fi
   fi
 
