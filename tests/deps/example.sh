@@ -7,6 +7,6 @@ example() {
     touch ./example.txt
   }
 
-  needs broken
-  needs other
+  require broken
+  require other
 }

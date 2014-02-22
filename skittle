@@ -1,0 +1,117 @@
+#!/bin/bash
+
+SK_arr_branches=()
+SK_branch_depth=-1
+
+SK_PASS="\033[1m[\033[32mok\033[0;1m]\033[0m"
+SK_FAIL="\033[1m[\033[31mfail\033[0;1m]\033[0m"
+
+SK_exit_on_error() {
+  set -e
+  $@
+  set +e
+}
+
+SK_include_dep() {
+  if ! SK_is_defined $1
+  then
+    paths=("$PWD/deps/$1.sh" "$HOME/needy-deps/$1.sh")
+    for path in $paths
+    do
+      if [[ -f $path ]]
+      then
+        source $path
+        break
+      fi
+    done
+  fi
+}
+
+SK_push_branch() {
+  ((SK_branch_depth++))
+  SK_arr_branches+=($1)
+}
+
+SK_is_defined() {
+  type -t $1 >/dev/null
+}
+
+SK_draw_branch() {
+  if [[ $SK_branch_depth -gt 0 ]]
+  then
+    SK_draw_branch_down ""
+
+    for ((i=0; i<SK_branch_depth-1; i++))
+    do
+      echo -n "| "
+    done
+
+    echo -n "+-"
+  fi
+
+  echo -e "+ \033[1m$1\033[0m"
+}
+
+SK_draw_branch_down() {
+  for ((i=0; i<SK_branch_depth; i++))
+  do
+    echo -n "| "
+  done
+  echo -e $1
+}
+
+SK_draw_pass() {
+  SK_draw_branch_down "| "
+  SK_draw_branch_down "\\ $SK_PASS $1"
+}
+
+SK_draw_fail() {
+  SK_draw_branch_down "| "
+  SK_draw_branch_down "\\ $SK_FAIL $1"
+}
+
+SK_fail_unwind() {
+  for ((; SK_branch_depth>=0; SK_branch_depth--))
+  do
+    SK_draw_fail ${SK_arr_branches[$SK_branch_depth]}
+  done
+
+  echo "Error: $1"
+  exit 1
+}
+
+require() {
+  (
+  SK_push_branch $1
+  SK_draw_branch $1
+  SK_include_dep $1
+
+  if SK_is_defined $1
+  then
+    SK_exit_on_error $@
+  else
+    SK_fail_unwind "Cannot find dependency '$1'"
+  fi
+
+  if SK_is_defined is_met && ! is_met
+  then
+    if SK_is_defined meet
+    then
+      meet
+    fi
+
+    if ! is_met
+    then
+      SK_fail_unwind "Dependency '$1' not met"
+    fi
+  fi
+
+  SK_draw_pass $1
+
+  unset $1
+  unset is_met
+  unset meet
+  )
+}
+
+require $@

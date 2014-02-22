@@ -5,7 +5,7 @@ broken() {
       true
     }
 
-    needs bar
+    require bar
   }
 
   zip() {
@@ -18,7 +18,7 @@ broken() {
       false
     }
 
-    needs button
+    require button
   }
 
   is_met() {
@@ -29,6 +29,6 @@ broken() {
     touch ./broken.txt
   }
 
-  needs foo
-  needs zip
+  require foo
+  require zip
 }
