@@ -1,0 +1,16 @@
++ [1mfailing[0m
+| 
++-+ [1mouter_1[0m
+| | 
+| +-+ [1minner_1[0m
+| | |
+| | \ [1m[[32mok[0;1m][0m inner_1
+| |
+| \ [1m[[32mok[0;1m][0m outer_1
+| 
++-+ [1mouter_2[0m
+| |
+| \ [1m[[31mfail[0;1m][0m outer_2
+|
+\ [1m[[31mfail[0;1m][0m failing
+Error: Dependency 'outer_2' not met.
