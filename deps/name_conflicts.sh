@@ -1,4 +1,8 @@
 name_conflicts() {
+  is_met() {
+    [[ -z $foo ]] && [[ -z $bar ]]
+  }
+
   one() {
     is_met() {
       [[ ! -z $foo ]]
