@@ -101,6 +101,8 @@ subsequent calls to `is_met` to return zero. Following this patterns makes
 Skittle dependencies idempotent. Go ahead and run it again. It still returns
 ok.
 
+### Chaining dependencies
+
 Ok, so this example was a bit basic. Creating the directory alone is probably
 not enough. Let's ensure that directory is writable only to a user named
 `wibble`. We now have to do four things to satisfy `log_dir`:
