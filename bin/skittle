@@ -3,9 +3,6 @@
 SK_arr_branches=()
 SK_branch_depth=-1
 
-SK_PASS="\033[1m[\033[32mok\033[0;1m]\033[0m"
-SK_FAIL="\033[1m[\033[31mfail\033[0;1m]\033[0m"
-
 SK_exit_on_error() {
   set -e
   $@
@@ -49,7 +46,7 @@ SK_draw_branch() {
     echo -n "+-"
   fi
 
-  echo -e "+ \033[1m$1\033[0m"
+  echo -e "+ \x1b[1m$1\x1b[0m"
 }
 
 SK_draw_branch_down() {
@@ -60,14 +57,27 @@ SK_draw_branch_down() {
   echo -e $1
 }
 
+SK_draw_status() {
+  case $1 in
+    ok)
+      color=32
+      ;;
+    fail)
+      color=31
+      ;;
+  esac
+
+  echo -e "\x1b[1m[\x1b[${color}m$1\x1b[0;1m]\x1b[0m"
+}
+
 SK_draw_pass() {
   SK_draw_branch_down "| "
-  SK_draw_branch_down "\\ $SK_PASS $1"
+  SK_draw_branch_down "\\ `SK_draw_status ok` $1"
 }
 
 SK_draw_fail() {
   SK_draw_branch_down "| "
-  SK_draw_branch_down "\\ $SK_FAIL $1"
+  SK_draw_branch_down "\\ `SK_draw_status fail` $1"
 }
 
 SK_fail_unwind() {
