@@ -28,8 +28,8 @@ If you do want to add it to your system, go ahead place it on your `$PATH`.
 ## Usage
 
 There are very few concepts to learn when it comes to using Skittle. The first,
-concept is knowing that `skittle` executable takes a single argument, which is
-the name of a dependency it should resolve.
+concept is knowing that the `skittle` executable takes a single argument, which
+is the name of a dependency it should resolve.
 
 The second concept, is that a dependency is just a function that defines two
 other functions to indicate if it needs to run, and also how to run it.
