@@ -5,7 +5,7 @@ name_conflicts() {
 
   one() {
     is_met() {
-      [[ ! -z $foo ]]
+      [[ -z $bar ]] && [[ ! -z $foo ]]
     }
 
     meet() {
@@ -15,7 +15,7 @@ name_conflicts() {
 
   two() {
     is_met() {
-      [[ ! -z $bar ]]
+      [[ -z $foo ]] && [[ ! -z $bar ]]
     }
 
     meet() {
