@@ -2,6 +2,9 @@
 
 A tiny tool for simplifying system provisioning with simple bash scripts.
 
+[![Build Status](https://secure.travis-ci.org/d11wtq/skittle.png?branch=master)]
+(http://travis-ci.org/d11wtq/skittle)
+
 ## Overview
 
 Skittle makes it really easy to script install procedures, configure computers
