@@ -153,7 +153,7 @@ log_dir() {
     }
 
     meet() {
-      sudo chmod -R 0755 $log_dir
+      sudo chmod -R 0755 $dir_path
     }
   }
 
@@ -233,17 +233,11 @@ Now we can change `log_dir` to use this generalized dep instead.
 log_dir() {
   dir_path=/var/log/wibble
 
-  dir_exists() {
-    is_met() {
-      ls $dir_path
-    }
-
-    meet() {
-      sudo mkdir $dir_path
-    }
-  }
+  # ... snip ...
 
   dir_ownership() {
+    require user_exists wibble
+
     is_met() {
       [[ `ls -ld $dir_path | awk '{print $3}'` = "wibble" ]]
     }
@@ -251,23 +245,9 @@ log_dir() {
     meet() {
       sudo chown -R wibble: $dir_path
     }
-
-    require user_exists wibble
   }
 
-  dir_permissions() {
-    is_met() {
-      [[ `ls -ld $dir_path | awk '{print $1}'` = "drwxr-xr-x" ]]
-    }
-
-    meet() {
-      sudo chmod -R 0755 $log_dir
-    }
-  }
-
-  require dir_exists
-  require dir_ownership
-  require dir_permissions
+  # ... snip ...
 }
 ```
 
@@ -283,10 +263,15 @@ problems—like how do you provision an entire server or virtual machine with
 Apache, PostgreSQL, Memcached and elasticsearch in a way that is easily
 reproducible?—in small units. And like _Babashka_, Skittle aims to do that with
 no dependencies. So we use bash, because you almost certainly have it available
-on your \*nix system.
+on your \*nix system and most of the things you do when provisioning machines
+call system commands. Shell scripting just makes sense.
 
 Unlike _Babashka_, Skittle takes a slightly different approach to dependency
 resolution. It makes use of subshells, in order to avoid in-memory state
 leakage between your dependencies. You can do things like nesting related
 dependencies inside each other and not have to worry about clobbering previous
-definitions.
+definitions. It is also smaller and provides a more readable output format.
+
+## Copyright &amp; Licensing
+
+Copyright &copy; 2014 Chris Corbyn. See the LICENSE file for details.
