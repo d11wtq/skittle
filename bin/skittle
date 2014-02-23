@@ -3,6 +3,32 @@
 SK_arr_branches=()
 SK_branch_depth=-1
 
+SK_init() {
+  SK_log_path=$HOME/.skittle/log/$1.log
+
+  if [[ ! -d `dirname $SK_log_path` ]]
+  then
+    mkdir -p `dirname $SK_log_path`
+  fi
+
+  if [[ -f $SK_log_path ]]
+  then
+    rm $SK_log_path
+  fi
+}
+
+SK_process() {
+  if SK_is_defined is_met && ! is_met
+  then
+    if SK_is_defined meet
+    then
+      meet
+    fi
+
+    is_met
+  fi
+}
+
 SK_exit_on_error() {
   set -e
   $@
@@ -103,20 +129,12 @@ require() {
     SK_fail_unwind "Cannot find dependency '$1'"
   fi
 
-  if SK_is_defined is_met && ! is_met
+  if SK_process $1 >>$SK_log_path 2>&1
   then
-    if SK_is_defined meet
-    then
-      meet
-    fi
-
-    if ! is_met
-    then
-      SK_fail_unwind "Dependency '$1' not met"
-    fi
+    SK_draw_pass $1
+  else
+    SK_fail_unwind "Dependency '$1' not met. See $SK_log_path."
   fi
-
-  SK_draw_pass $1
 
   unset $1
   unset is_met
@@ -124,4 +142,5 @@ require() {
   )
 }
 
+SK_init $@
 require $@
