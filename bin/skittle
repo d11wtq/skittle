@@ -34,12 +34,6 @@ SK_process() {
   )
 }
 
-SK_exit_on_error() {
-  set -e
-  $@
-  set +e
-}
-
 SK_include_dep() {
   if ! SK_is_defined $1
   then
@@ -138,18 +132,24 @@ SK_fail_unwind() {
   exit 1
 }
 
-require() {
+SK_recurse() {
   (
+  SK_deps=()
   SK_push_branch $1
   SK_draw_branch $1
   SK_include_dep $1
 
   if SK_is_defined $1
   then
-    SK_exit_on_error $@
+    $@
   else
     SK_fail_unwind "Cannot find dependency '$1'"
   fi
+
+  for dep in "${SK_deps[@]}"
+  do
+    SK_recurse $dep || exit 1
+  done
 
   if SK_process $1 >>$SK_log_path 2>&1
   then
@@ -164,5 +164,9 @@ require() {
   )
 }
 
+require() {
+  SK_deps+=("$*")
+}
+
 SK_init $@
-require $@
+SK_recurse $@
