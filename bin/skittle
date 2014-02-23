@@ -18,6 +18,10 @@ SK_init() {
 }
 
 SK_process() {
+  (
+  SK_draw_dep_path
+
+  set -x
   if SK_is_defined is_met && ! is_met
   then
     if SK_is_defined meet
@@ -27,6 +31,7 @@ SK_process() {
 
     is_met
   fi
+  )
 }
 
 SK_exit_on_error() {
@@ -57,6 +62,23 @@ SK_push_branch() {
 
 SK_is_defined() {
   [[ `type -t $1` = function ]] >/dev/null
+}
+
+SK_draw_dep_path() {
+  echo
+  echo "# `date`"
+  echo -n "#"
+  echo -n " Processing "
+  for ((i=0; i<$SK_branch_depth+1; i++))
+  do
+    if [[ $i -gt 0 ]]
+    then
+      echo -n "-> "
+    fi
+
+    echo -n "${SK_arr_branches[$i]} "
+  done
+  echo
 }
 
 SK_draw_branch() {
