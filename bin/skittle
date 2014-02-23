@@ -36,7 +36,7 @@ SK_process() {
 
 SK_exit_on_error() {
   set -e
-  $@
+  "$@"
   set +e
 }
 
@@ -146,7 +146,7 @@ require() {
 
   if SK_is_defined $1
   then
-    SK_exit_on_error $@
+    SK_exit_on_error "$@"
   else
     SK_fail_unwind "Cannot find dependency '$1'"
   fi
