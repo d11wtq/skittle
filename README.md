@@ -256,6 +256,17 @@ log_dir() {
 
 That's pretty much all there is to it!
 
+## Running the tests
+
+Skittle uses itself to test itself. To run the tests, run the 'tests' dep.
+
+```
+./bin/skittle tests
+```
+
+Reading through the test code (in the deps directory) is good way to see an
+example of Skittle code too.
+
 ## Design Objectives
 
 Like Babushka, Skittle aims to make it really easy to think about large
