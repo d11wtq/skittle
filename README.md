@@ -256,7 +256,7 @@ log_dir() {
 
 That's pretty much all there is to it!
 
-## Running the tests
+## Behavioural Tests
 
 Skittle uses itself to test itself. To run the tests, run the 'tests' dep.
 
