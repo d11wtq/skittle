@@ -51,12 +51,12 @@ SK_include_dep() {
 }
 
 SK_push_branch() {
-  ((SK_branch_depth++))
+  ((SK_branch_depth+=1))
   SK_arr_branches+=($1)
 }
 
 SK_is_defined() {
-  type -t $1 >/dev/null
+  [[ `type -t $1` = function ]] >/dev/null
 }
 
 SK_draw_branch() {
