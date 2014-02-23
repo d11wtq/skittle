@@ -11,5 +11,4 @@ tests() {
   require parameterized_dep
   require success_output
   require failure_output
-  require require_before_def
 }
