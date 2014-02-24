@@ -30,20 +30,21 @@ If you do want to add it to your system, go ahead place it on your `$PATH`.
 
 ## Usage
 
-There are very few concepts to learn when it comes to using Skittle. The first,
+There are very few concepts to learn when it comes to using Skittle. The first
 concept is knowing that the `skittle` executable takes a single argument, which
 is the name of a dependency it should resolve.
 
 The second concept, is that a dependency is just a function that defines two
-other functions to indicate if it needs to run, and also how to run it.
+other functions: one to indicate if it needs to run, and another that specifies
+how to run it.
 
 Finally, dependencies may specify other depdencies that they require to run
-(i.e. they are recursive).
+(i.e. they are recursively defined).
 
 Let's look at a simple example of creating a log directory for a fictonal
-service called "wibble" (I don't know, it was just a name that came to mind!)
+service called "turtle" (It was just a name that came to mind!)
 
-We'll run this fictional dependency like so.
+We'll run this dependency like so.
 
 ```
 bash-3.2$ ./skittle log_dir
@@ -55,13 +56,13 @@ Error: Cannot find dependency 'log_dir'
 
 As you might expect, this produces an error, because we haven't actually
 specified what the `log_dir` dependency should do. We need to create a file
-named "./deps/log_dir.sh" and add a small amount of code.
+named `"./deps/log_dir.sh"` and add a small amount of code.
 
 ``` bash
 # ./deps/log_dir.sh
 
 log_dir() {
-  dir_path=/var/log/wibble
+  dir_path=/var/log/turtle
 
   is_met() {
     ls $dir_path
@@ -73,11 +74,11 @@ log_dir() {
 }
 ```
 
-Save the file and go ahead and run `skittle log_dir` again, you should see
+Save the file and go ahead and run `skittle log_dir` again. You should see
 everything go green and an `[ok]` indicator.
 
 ```
-bash-3.2$ skittle log_dir
+bash-3.2$ ./skittle log_dir
 + log_dir
 |
 \ [ok] log_dir
@@ -86,9 +87,9 @@ bash-3.2$
 
 > **Note** `sudo` may prompt for your password when you run this dep.
 
-If you take a look , /var/log/wibble should have been created.
+If you take a look , `/var/log/turtle` should have been created.
 
-Quite simply, Skittle looks for your depedency under ./deps, using the
+Quite simply, Skittle looks for your depedency under `./deps`, using the
 convention that it has a file name matching the dependency, but ending in
 ".sh".
 
@@ -97,7 +98,7 @@ and `meet` functions.
 
 If the `is_met` function returns a zero exit status, nothing happens. If,
 however it returns non-zero, it runs the `meet` function which should cause
-subsequent calls to `is_met` to return zero. Following this patterns makes
+subsequent calls to `is_met` to return zero. Following this pattern makes
 Skittle dependencies idempotent. Go ahead and run it again. It still returns
 ok.
 
@@ -105,11 +106,11 @@ ok.
 
 Ok, so this example was a bit basic. Creating the directory alone is probably
 not enough. Let's ensure that directory is writable only to a user named
-`wibble`. We now have to do four things to satisfy `log_dir`:
+'turtle'. We now have to do four things to satisfy `log_dir`:
 
   1. Ensure the directory exists.
-  2. Ensure the wibble user exists.
-  3. Ensure the directory is owned by wibble.
+  2. Ensure the turtle user exists.
+  3. Ensure the directory is owned by turtle.
   4. Ensure the directory has 755 permissions.
 
 We'll use Skittle's `require` function for this.
@@ -118,7 +119,7 @@ We'll use Skittle's `require` function for this.
 # ./deps/log_dir.sh
 
 log_dir() {
-  dir_path=/var/log/wibble
+  dir_path=/var/log/turtle
 
   dir_exists() {
     is_met() {
@@ -131,25 +132,25 @@ log_dir() {
   }
 
   dir_ownership() {
-    wibble_user_exists() {
+    turtle_user_exists() {
       is_met() {
-        id wibble
+        id turtle
       }
 
       meet() {
-        sudo useradd wibble
+        sudo useradd turtle
       }
     }
 
     is_met() {
-      [[ `ls -ld $dir_path | awk '{print $3}'` = "wibble" ]]
+      [[ `ls -ld $dir_path | awk '{print $3}'` = "turtle" ]]
     }
 
     meet() {
-      sudo chown -R wibble: $dir_path
+      sudo chown -R turtle: $dir_path
     }
 
-    require wibble_user_exists
+    require turtle_user_exists
   }
 
   dir_permissions() {
@@ -181,9 +182,9 @@ bash-3.2$ skittle log_dir
 |
 +-+ dir_ownership
 | |
-| +-+ wibble_user_exists
+| +-+ turtle_user_exists
 | | |
-| | \ [ok] wibble_user_exists
+| | \ [ok] turtle_user_exists
 | |
 | \ [ok] dir_ownership
 |
@@ -196,21 +197,21 @@ bash-3.2$
 ```
 
 Notice that the original `log_dir` code moved into an inner depedency called
-`dir_created`, since it was only checking if the log directory existed. The
+`dir_exists`, since it was only checking if the log directory existed. The
 other requirements have then been stated using `require`.
 
-Notice also that `dir_ownership` has a nested dependency `wibble_user_exists`.
+Notice also that `dir_ownership` has a nested dependency `turtle_user_exists`.
 This is allowed with Skittle so that you can group related dependencies
-together. In this case however, `wibble_user_exists` probably doesn't belong
+together. In this case however, `turtle_user_exists` probably doesn't belong
 here, as it is not directly related to the log directory. It is very simple to
-just move the function definition to ./deps/wibble_user_exists.sh. Try it,
+just move the function definition to ./deps/turtle_user_exists.sh. Try it,
 everything should work the same.
 
 ### Parameterized dependencies
 
 Sometimes it is useful for dependencies to accept arguments, so that they
 become more general and re-usable. A great example of this is
-`wibble_user_exists`. The code here could work for any user, so we can
+`turtle_user_exists`. The code here could work for any user, so we can
 generalize it and accept a username as an argument. Because dependencies are
 just bash functions, arguments are numbered `$1`, `$2` etc.
 
@@ -236,19 +237,19 @@ Now we can change `log_dir` to use this generalized dep instead.
 # ./deps/log_dir.sh
 
 log_dir() {
-  dir_path=/var/log/wibble
+  dir_path=/var/log/turtle
 
   # ... snip ...
 
   dir_ownership() {
-    require user_exists wibble
+    require user_exists turtle
 
     is_met() {
-      [[ `ls -ld $dir_path | awk '{print $3}'` = "wibble" ]]
+      [[ `ls -ld $dir_path | awk '{print $3}'` = "turtle" ]]
     }
 
     meet() {
-      sudo chown -R wibble: $dir_path
+      sudo chown -R turtle: $dir_path
     }
   }
 
