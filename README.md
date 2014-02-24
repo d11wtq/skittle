@@ -173,7 +173,7 @@ Now when we run `skittle log_dir`, we see it executes a tree. Again, this is
 idempotent—you can run it over and over just fine.
 
 ```
-bash-3.2$ skittle log_dir
+bash-3.2$ ./skittle log_dir
 + log_dir
 |
 +-+ dir_exists
@@ -204,14 +204,14 @@ Notice also that `dir_ownership` has a nested dependency `turtle_user_exists`.
 This is allowed with Skittle so that you can group related dependencies
 together. In this case however, `turtle_user_exists` probably doesn't belong
 here, as it is not directly related to the log directory. It is very simple to
-just move the function definition to ./deps/turtle_user_exists.sh. Try it,
+just move the function definition to `./deps/turtle_user_exists.sh`. Try it,
 everything should work the same.
 
 ### Parameterized dependencies
 
 Sometimes it is useful for dependencies to accept arguments, so that they
 become more general and re-usable. A great example of this is
-`turtle_user_exists`. The code here could work for any user, so we can
+`turtle_user_exists` from our earlier example. The code here could work for any user, so we can
 generalize it and accept a username as an argument. Because dependencies are
 just bash functions, arguments are numbered `$1`, `$2` etc.
 
@@ -262,9 +262,9 @@ log_dir() {
 
 That's pretty much all there is to it!
 
-## Behavioural Tests
+## Behavioural Tests (aka Yo Dawg)
 
-Skittle uses itself to test itself. To run the tests, run the 'tests' dep.
+Skittle uses Skittle to test Skittle, so that I can write Skittle while writing Skittle to test Skittle. To run the tests, run `skittle` with the 'tests' dep.
 
 ```
 ./bin/skittle tests
