@@ -211,9 +211,9 @@ everything should work the same.
 
 Sometimes it is useful for dependencies to accept arguments, so that they
 become more general and re-usable. A great example of this is
-`turtle_user_exists` from our earlier example. The code here could work for any user, so we can
-generalize it and accept a username as an argument. Because dependencies are
-just bash functions, arguments are numbered `$1`, `$2` etc.
+`turtle_user_exists` from our earlier example. The code here could work for any
+user, so we can generalize it and accept a username as an argument. Because
+dependencies are just bash functions, arguments are numbered `$1`, `$2` etc.
 
 ``` bash
 # ./deps/user_exists.sh
@@ -264,7 +264,8 @@ That's pretty much all there is to it!
 
 ## Behavioural Tests (aka Yo Dawg)
 
-Skittle uses Skittle to test Skittle, so that I can write Skittle while writing Skittle to test Skittle. To run the tests, run `skittle` with the 'tests' dep.
+Skittle uses Skittle to test Skittle, so that I can write Skittle while
+developing Skittle. To run the tests, run `skittle` with the 'tests' dep.
 
 ```
 ./bin/skittle tests
