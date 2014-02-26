@@ -168,5 +168,5 @@ require() {
   SK_deps+=("`printf " %q " "$@"`")
 }
 
-SK_init $@
-SK_recurse $@
+SK_init "$@"
+SK_recurse "$@"
