@@ -121,6 +121,10 @@ We'll use Skittle's `require` function for this.
 log_dir() {
   dir_path=/var/log/turtle
 
+  require dir_exists
+  require dir_ownership
+  require dir_permissions
+
   dir_exists() {
     is_met() {
       ls $dir_path
@@ -162,10 +166,6 @@ log_dir() {
       sudo chmod -R 0755 $dir_path
     }
   }
-
-  require dir_exists
-  require dir_ownership
-  require dir_permissions
 }
 ```
 
