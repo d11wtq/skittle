@@ -1,21 +1,23 @@
 parameterized_dep() {
   outer_filename=./deps/tests/tmp/parameterized_dep.txt
+  outer_contents="one two three"
 
   write_file() {
     filename=$1
+    contents=$2
 
     is_met() {
-      ls $filename
+      [[ `cat $filename` = $contents ]]
     }
 
     meet() {
-      touch $filename
+      echo $contents > $filename
     }
   }
 
   is_met() {
-    ls $outer_filename
+    [[ `cat $outer_filename` = $outer_contents ]]
   }
 
-  require write_file $outer_filename
+  require write_file $outer_filename "$outer_contents"
 }
