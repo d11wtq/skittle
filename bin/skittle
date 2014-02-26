@@ -148,7 +148,7 @@ SK_recurse() {
 
   for dep in "${SK_deps[@]}"
   do
-    SK_recurse $dep || exit 1
+    eval SK_recurse $dep || exit 1
   done
 
   if SK_process $1 >>$SK_log_path 2>&1
@@ -165,7 +165,7 @@ SK_recurse() {
 }
 
 require() {
-  SK_deps+=("$*")
+  SK_deps+=("`printf " %q " "$@"`")
 }
 
 SK_init $@
