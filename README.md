@@ -260,7 +260,7 @@ log_dir() {
 > **Note** It is important to store the function arguments to variables so they
 >          can be used inside `is_met` and `meet`.
 
-## Grouping multiple deps together
+### Grouping multiple deps together
 
 So we can create a log directory for our turtle service just fine. You could go
 on to install the entire turtle service, by breaking the problem down into
@@ -283,7 +283,7 @@ users of the turtle service to run.
 
 That's pretty much all there is to it!
 
-## Other features
+### Other features
 
   * Dependencies can be stored in subdirectories of `./deps`
   * Other supported locations for `./deps` are `~/skittle-deps` and
