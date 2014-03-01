@@ -378,20 +378,22 @@ example of Skittle code too.
   * Dependencies can be stored in subdirectories
   * Other supported locations for `./deps` are `~/skittle-deps` and
     `./skittle-deps`
-  * The dependency name is `unset` before its `is_met` and `meet` functions are
-    run. This makes it safe to name a dependency the same as a system binary
-    (i.e. if you execute the system binary `git` in a dep named `git`, you will
-    indeed execute /usr/bin/git, rather than recurse into the dep function)
+  * The dependency function is unset before its `is_met` and `meet` functions
+    are run. This makes it safe to name a dependency the same as a system
+    binary (i.e. if you execute the system binary `git` in a dep named `git`,
+    you will indeed execute /usr/bin/git, rather than recurse into the dep
+    function)
 
 ## Design Objectives
 
 Like Babushka, Skittle aims to make it really easy to think about large
-problems—like how do you provision an entire server or virtual machine with
+problems—like how to provision an entire server or virtual machine with
 Apache, PostgreSQL, Memcached and elasticsearch in a way that is easily
-reproducible?—in small units. And like _Babashka_, Skittle aims to do that with
+reproducible—in small units. And like _Babashka_, Skittle aims to do that with
 no dependencies. So we use bash, because you almost certainly have it available
 on your \*nix system and most of the things you do when provisioning machines
-call system commands. Shell scripting just makes sense.
+call system commands. Shell scripting just makes sense when most of the work
+you need to do involves running shell commands.
 
 Unlike _Babashka_, Skittle takes a slightly different approach to dependency
 resolution. It makes use of subshells, in order to avoid in-memory state
