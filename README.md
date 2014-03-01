@@ -294,7 +294,7 @@ user_exists() {
 
 This will output something along the lines of.
 
-``` bash
+```
 bash-3.2$ ./skittle log_dir
 + log_dir
 |
