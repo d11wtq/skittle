@@ -4,6 +4,7 @@ SK_arr_branches=()
 SK_branch_depth=-1
 
 SK_init() {
+  SK_work_dir=$PWD
   SK_log_path=$HOME/.skittle/log/$1.log
 
   if [[ ! -d `dirname $SK_log_path` ]]
@@ -37,7 +38,7 @@ SK_process() {
 SK_include_dep() {
   if ! SK_is_defined $1
   then
-    paths=("$PWD/deps" "$PWD/skittle-deps" "$HOME/skittle-deps")
+    paths=("$SK_work_dir/deps" "$SK_work_dir/skittle-deps" "$HOME/skittle-deps")
     for path in $paths
     do
       for file in $(find $path -name "$1.sh")
