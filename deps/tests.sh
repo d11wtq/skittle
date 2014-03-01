@@ -13,4 +13,5 @@ tests() {
   require failure_output
   require require_before_def
   require dep_in_subfolder
+  require bin_recursion_prevention
 }

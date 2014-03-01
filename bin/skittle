@@ -19,6 +19,7 @@ SK_init() {
 
 SK_process() {
   (
+  unset $1
   SK_draw_dep_path
 
   set -x
