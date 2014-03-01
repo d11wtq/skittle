@@ -1,0 +1,9 @@
++ [1mlogging[0m
+|
+\ [1m[[33m..[0;1m][0m Checking if file exists
+|
+\ [1m[[33m..[0;1m][0m Creating file
+|
+\ [1m[[33m..[0;1m][0m Checking if file exists
+|
+\ [1m[[32mok[0;1m][0m logging

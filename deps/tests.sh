@@ -11,6 +11,7 @@ tests() {
   require parameterized_dep
   require success_output
   require failure_output
+  require logging_output
   require require_before_def
   require dep_in_subfolder
   require bin_recursion_prevention

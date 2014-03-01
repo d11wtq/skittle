@@ -123,6 +123,11 @@ SK_draw_fail() {
   SK_draw_branch_down "\\ `SK_draw_status fail` $1"
 }
 
+SK_draw_log() {
+  SK_draw_branch_down "| "
+  SK_draw_branch_down "\\ \x1b[1m[\x1b[33m..\x1b[0;1m]\x1b[0m $*"
+}
+
 SK_fail_unwind() {
   for ((; SK_branch_depth>=0; SK_branch_depth--))
   do
@@ -162,7 +167,7 @@ SK_recurse() {
     eval SK_recurse $dep || exit 1
   done
 
-  if SK_process $1 >>$SK_log_path 2>&1
+  if SK_process $1 3>&1 2>>$SK_log_path 1>&2
   then
     SK_draw_pass $1
   else
@@ -176,6 +181,10 @@ SK_recurse() {
 
 require() {
   SK_deps+=("`printf " %q " "$@"`")
+}
+
+echolog() {
+  SK_draw_log "$@" >&3
 }
 
 SK_init "$@"
