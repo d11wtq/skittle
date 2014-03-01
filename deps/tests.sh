@@ -1,5 +1,5 @@
 tests() {
-  TMP_DIR=`realpath deps/tests/tmp`
+  TMP_DIR="$(cd deps/tests && pwd)/tmp"
 
   require empty_tmp_dir
   require file_creation
