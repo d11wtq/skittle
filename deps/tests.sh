@@ -1,5 +1,5 @@
 tests() {
-  TMP_DIR=deps/tests/tmp
+  TMP_DIR=`realpath deps/tests/tmp`
 
   require empty_tmp_dir
   require file_creation
@@ -14,4 +14,5 @@ tests() {
   require require_before_def
   require dep_in_subfolder
   require bin_recursion_prevention
+  require pwd_behaviour
 }

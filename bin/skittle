@@ -22,14 +22,14 @@ SK_process() {
   SK_draw_dep_path
 
   set -x
-  if SK_is_defined is_met && ! is_met
+  if SK_is_defined is_met && ! (is_met)
   then
     if SK_is_defined meet
     then
-      meet
+      (meet)
     fi
 
-    is_met
+    (is_met)
   fi
   )
 }
