@@ -260,12 +260,90 @@ log_dir() {
 > **Note** It is important to store the function arguments to variables so they
 >          can be used inside `is_met` and `meet`.
 
+### Logging/debugging
+
+Sometimes you'll want to provide some arbitrary output to the console while
+Skittle is processing the dependency tree. Using `echo` won't work, since
+Skittle gathers all output on `stdout` and `stderr` into the log file. Instead,
+Skittle provides `echolog`, which prints a message to the console and reflects
+which branch of the dependency tree this log output comes from.
+
+You can use `echolog` anywhere inside the main function body of the dep, or
+inside `is_met` and `meet`.
+
+For example, in our generic `user_exists` dep, it might be a good idea to show
+which user the dep is being run for.
+
+``` bash
+# ./deps/user_exists.sh
+
+user_exists() {
+  username=$1
+
+  echolog "Checking user: $username"
+
+  is_met() {
+    id $username
+  }
+
+  meet() {
+    sudo useradd $username
+  }
+}
+```
+
+This will output something along the lines of.
+
+``` bash
+bash-3.2$ ./skittle log_dir
++ log_dir
+|
++-+ dir_exists
+| |
+| \ [ok] dir_exists
+|
++-+ dir_ownership
+| |
+| +-+ user_exists
+| | |
+| | \ [..] Checking user: turtle
+| | |
+| | \ [ok] user_exists
+| |
+| \ [ok] dir_ownership
+|
++-+ dir_permissions
+| |
+| \ [ok] dir_permissions
+|
+\ [ok] log_dir
+bash-3.2$
+```
+
+Another suggested use of `echolog` is to provide feedback to the user during
+long running operations.
+
+``` bash
+compile_source() {
+  cd project_src/
+
+  is_met() {
+    [[ -f some_binary ]]
+  }
+
+  meet() {
+    echolog "Compiling (may take some time)"
+    make
+  }
+}
+```
+
 ### Grouping multiple deps together
 
-So, we can create a log directory for our turtle service just fine. You could
-go on to install the entire turtle service, by breaking the problem down into
-similarly small tasks and putting them all under a top level dependency, like
-so.
+Ok, so we can create a log directory for our turtle service just fine. You
+could go on to install the entire turtle service, by breaking the problem down
+into similarly small tasks and putting them all under a top level dependency,
+like so.
 
 ``` bash
 install_turtle() {
@@ -283,14 +361,6 @@ users of the turtle service to run.
 
 That's pretty much all there is to it!
 
-### Other features
-
-  * Dependencies can be stored in subdirectories of `./deps`
-  * Other supported locations for `./deps` are `~/skittle-deps` and
-    `./skittle-deps`
-  * Dependencies do not need to define `is_met` and `meet`. Such dependencies
-    will always run code in their definitions and pass if they return zero.
-
 ## Behavioural Tests (aka Yo Dawg)
 
 Skittle uses Skittle to test Skittle, so that I can write Skittle while
@@ -302,6 +372,16 @@ developing Skittle. To run the tests, run `skittle` with the 'tests' dep.
 
 Reading through the test code (in the deps directory) is good way to see an
 example of Skittle code too.
+
+### Other features
+
+  * Dependencies can be stored in subdirectories
+  * Other supported locations for `./deps` are `~/skittle-deps` and
+    `./skittle-deps`
+  * The dependency name is `unset` before its `is_met` and `meet` functions are
+    run. This makes it safe to name a dependency the same as a system binary
+    (i.e. if you execute the system binary `git` in a dep named `git`, you will
+    indeed execute /usr/bin/git, rather than recurse into the dep function)
 
 ## Design Objectives
 
@@ -317,7 +397,7 @@ Unlike _Babashka_, Skittle takes a slightly different approach to dependency
 resolution. It makes use of subshells, in order to avoid in-memory state
 leakage between your dependencies. You can do things like nesting related
 dependencies inside each other and not have to worry about clobbering previous
-definitions. It is also smaller and provides a more readable output format.
+definitions. It also provides a more readable output format.
 
 ## Copyright &amp; Licensing
 
