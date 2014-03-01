@@ -262,8 +262,8 @@ log_dir() {
 
 ### Grouping multiple deps together
 
-So we can create a log directory for our turtle service just fine. You could go
-on to install the entire turtle service, by breaking the problem down into
+So, we can create a log directory for our turtle service just fine. You could
+go on to install the entire turtle service, by breaking the problem down into
 similarly small tasks and putting them all under a top level dependency, like
 so.
 
