@@ -1,5 +1,7 @@
 + [1mlogging[0m
 |
+\ [1m[[33m..[0;1m][0m Inside 'logging'
+|
 \ [1m[[33m..[0;1m][0m Checking if file exists
 |
 \ [1m[[33m..[0;1m][0m Creating file
