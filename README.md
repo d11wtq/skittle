@@ -260,7 +260,36 @@ log_dir() {
 > **Note** It is important to store the function arguments to variables so they
 >          can be used inside `is_met` and `meet`.
 
+## Grouping multiple deps together
+
+So we can create a log directory for our turtle service just fine. You could go
+on to install the entire turtle service, by breaking the problem down into
+similarly small tasks and putting them all under a top level dependency, like
+so.
+
+``` bash
+install_turtle() {
+  require copy_files
+  require runlevels
+  require log_dir
+  require data_dir
+}
+```
+
+Running `./skittle install_turtle` will run each of the deps listed in order.
+If any single dep fails, the entire install process will halt. It's not hard
+to see how something like this could be wrapped under a simple `install.sh` for
+users of the turtle service to run.
+
 That's pretty much all there is to it!
+
+## Other features
+
+  * Dependencies can be stored in subdirectories of `./deps`
+  * Other supported locations for `./deps` are `~/skittle-deps` and
+    `./skittle-deps`
+  * Dependencies do not need to define `is_met` and `meet`. Such dependencies
+    will always run code in their definitions and pass if they return zero.
 
 ## Behavioural Tests (aka Yo Dawg)
 
