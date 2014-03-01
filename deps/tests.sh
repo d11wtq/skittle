@@ -12,4 +12,5 @@ tests() {
   require success_output
   require failure_output
   require require_before_def
+  require dep_in_subfolder
 }

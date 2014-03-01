@@ -37,14 +37,14 @@ SK_process() {
 SK_include_dep() {
   if ! SK_is_defined $1
   then
-    paths=("$PWD/deps/$1.sh" "$HOME/needy-deps/$1.sh")
+    paths=("$PWD/deps" "$PWD/skittle-deps" "$HOME/skittle-deps")
     for path in $paths
     do
-      if [[ -f $path ]]
-      then
-        source $path
-        break
-      fi
+      for file in $(find $path -name "$1.sh")
+      do
+        source $file
+        return
+      done
     done
   fi
 }
