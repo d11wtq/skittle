@@ -19,7 +19,6 @@ SK_init() {
 
 SK_process() {
   (
-  unset $1
   SK_draw_dep_path
 
   set -x
@@ -133,6 +132,14 @@ SK_fail_unwind() {
   exit 1
 }
 
+SK_unset_dep() {
+  unset $1
+}
+
+SK_expand_dep() {
+  "$@"
+}
+
 SK_recurse() {
   (
   SK_deps=()
@@ -142,10 +149,12 @@ SK_recurse() {
 
   if SK_is_defined $1
   then
-    "$@"
+    SK_expand_dep "$@"
   else
     SK_fail_unwind "Cannot find dependency '$1'"
   fi
+
+  SK_unset_dep $1
 
   for dep in "${SK_deps[@]}"
   do
@@ -159,7 +168,6 @@ SK_recurse() {
     SK_fail_unwind "Dependency '$1' not met. See $SK_log_path."
   fi
 
-  unset $1
   unset is_met
   unset meet
   )

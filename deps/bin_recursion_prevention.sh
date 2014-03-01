@@ -1,14 +1,18 @@
 bin_recursion_prevention() {
   cat() {
-    file=$TMP_DIR/recursion_prevention.txt
+    write_file() {
+      file=$TMP_DIR/recursion_prevention.txt
 
-    is_met() {
-      [[ `cat $file` = "example" ]]
+      is_met() {
+        [[ `cat $file` = "example" ]]
+      }
+
+      meet() {
+        echo "example" | cat > $file
+      }
     }
 
-    meet() {
-      echo "example" | cat > $file
-    }
+    require write_file
   }
 
   require cat
