@@ -139,7 +139,7 @@ SK_fail_unwind() {
 }
 
 SK_unset_dep() {
-  unset $1
+  unset -f $1
 }
 
 SK_expand_dep() {
@@ -155,7 +155,7 @@ SK_recurse() {
 
   if SK_is_defined $1
   then
-    SK_expand_dep "$@" 3>&1
+    SK_expand_dep "$@"
   else
     SK_fail_unwind "Cannot find dependency '$1'"
   fi
@@ -174,8 +174,8 @@ SK_recurse() {
     SK_fail_unwind "Dependency '$1' not met. See $SK_log_path."
   fi
 
-  unset is_met
-  unset meet
+  unset -f is_met
+  unset -f meet
   )
 }
 
