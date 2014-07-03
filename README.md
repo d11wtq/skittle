@@ -401,6 +401,14 @@ leakage between your dependencies. You can do things like nesting related
 dependencies inside each other and not have to worry about clobbering previous
 definitions. It also provides a more readable output format.
 
+## Donations
+
+[![Tip!](http://img.shields.io/gittip/d11wtq.svg)](https://gittip.com/d11wtq)
+
+I work on open source projects for free and because I genuinely enjoy giving to
+the community, but of course any donations are well-received. You can donate a
+small amount via [gittip](https://gittip.com/d11wtq) if you're feeling generous.
+
 ## Copyright &amp; Licensing
 
 Copyright &copy; 2014 Chris Corbyn. See the LICENSE file for details.
