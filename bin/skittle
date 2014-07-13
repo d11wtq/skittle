@@ -43,7 +43,7 @@ SK_include_dep() {
     do
       for file in $(find $path -name "$1.sh")
       do
-        p=$(dirname $(dirname $file))
+        p=$(dirname $file)
         source $file
         return
       done

@@ -361,6 +361,53 @@ users of the turtle service to run.
 
 That's pretty much all there is to it!
 
+### Composing dependency trees
+
+At some point you may want to break your dependencies down into separate
+projects in order to allow for re-use in different ways. In general, this is as
+simple as adding nested directories under ./deps, however, there is one caveat:
+if your deps are coded using relative paths to support files, such as the
+following, you may run into trouble nesting your deps, since `$PWD` is relative
+to the user running `skittle`, not relative to the dependency file itself.
+
+``` bash
+etc_issue() {
+  wanted=./deps/issue_file.txt
+
+  is_met() {
+    diff $wanted /etc/issue
+  }
+
+  meet() {
+    sudo cp -f $wanted /etc/issue
+  }
+}
+```
+
+If this dep is nested at, say ./deps/common/deps/etc_issue.sh, it will not do
+what you expect due to the relative path.
+
+For this purpose, Skittle provides `$p`, which is implicitly set for each dep
+being run. This special variable defines the directory from which the
+dependency file itself was loaded. You should use it everywhere you mean
+"relative to the current dependency".
+
+``` bash
+etc_issue() {
+  wanted=$p/issue_file.txt
+
+  is_met() {
+    diff $wanted /etc/issue
+  }
+
+  meet() {
+    sudo cp -f $wanted /etc/issue
+  }
+}
+```
+
+Now the above dep will run anywhere it is copied to.
+
 ## Behavioural Tests (aka Yo Dawg)
 
 Skittle uses Skittle to test Skittle, so that I can write Skittle while
