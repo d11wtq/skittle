@@ -22,7 +22,7 @@ directly. It is less than 200 lines long (including whitespace and function
 definitions) and lives in a single file.
 
 ``` bash
-curl -O https://raw.github.com/d11wtq/skittle/master/bin/skittle
+curl -O https://raw.githubusercontent.com/d11wtq/skittle/master/bin/skittle
 chmod +x skittle
 ```
 
