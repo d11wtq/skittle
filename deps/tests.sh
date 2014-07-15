@@ -16,4 +16,5 @@ tests() {
   require dep_in_subfolder
   require bin_recursion_prevention
   require pwd_behaviour
+  require relative_paths
 }
