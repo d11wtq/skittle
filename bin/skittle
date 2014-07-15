@@ -156,7 +156,7 @@ SK_recurse() {
 
   if SK_is_defined $1
   then
-    SK_expand_dep "$@"
+    SK_expand_dep "$@" 3>&1
   else
     SK_fail_unwind "Cannot find dependency '$1'"
   fi
