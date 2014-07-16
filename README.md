@@ -10,10 +10,6 @@ A tiny tool for simplifying system provisioning with simple bash scripts.
 Skittle makes it really easy to script install procedures, configure computers
 or do just about anything that takes multiple steps using bash.
 
-It is inspired by [Babushka](http://babushka.me) and encouraged by its
-play-on-words cousin, [_Babashka_](https://github.com/richo/babashka), though
-it does a few things differently.
-
 ## Installation
 
 Because Skittle aims for zero dependencies, it is not intended that you install
@@ -408,10 +404,10 @@ etc_issue() {
 
 Now the above dep will run anywhere it is copied to.
 
-## Behavioural Tests (aka Yo Dawg)
+## Tests
 
-Skittle uses Skittle to test Skittle, so that I can write Skittle while
-developing Skittle. To run the tests, run `skittle` with the 'tests' dep.
+Skittle uses Skittle to test itself. To run the tests, run `skittle` with
+the 'tests' dep.
 
 ```
 ./bin/skittle tests
@@ -420,7 +416,7 @@ developing Skittle. To run the tests, run `skittle` with the 'tests' dep.
 Reading through the test code (in the deps directory) is good way to see an
 example of Skittle code too.
 
-### Other features
+## Other features
 
   * Dependencies can be stored in subdirectories
   * Other supported locations for `./deps` are `~/skittle-deps` and
@@ -430,23 +426,6 @@ example of Skittle code too.
     binary (i.e. if you execute the system binary `git` in a dep named `git`,
     you will indeed execute /usr/bin/git, rather than recurse into the dep
     function)
-
-## Design Objectives
-
-Like Babushka, Skittle aims to make it really easy to think about large
-problems—like how to provision an entire server or virtual machine with
-Apache, PostgreSQL, Memcached and elasticsearch in a way that is easily
-reproducible—in small units. And like _Babashka_, Skittle aims to do that with
-no dependencies. So we use bash, because you almost certainly have it available
-on your \*nix system and most of the things you do when provisioning machines
-call system commands. Shell scripting just makes sense when most of the work
-you need to do involves running shell commands.
-
-Unlike _Babashka_, Skittle takes a slightly different approach to dependency
-resolution. It makes use of subshells, in order to avoid in-memory state
-leakage between your dependencies. You can do things like nesting related
-dependencies inside each other and not have to worry about clobbering previous
-definitions. It also provides a more readable output format.
 
 ## Donations
 
