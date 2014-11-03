@@ -23,13 +23,9 @@ SK_process() {
   SK_draw_dep_path
 
   set -x
-  if SK_is_defined is_met && ! (is_met)
+  if ! (is_met)
   then
-    if SK_is_defined meet
-    then
-      (meet)
-    fi
-
+    (meet)
     (is_met)
   fi
   )
@@ -144,6 +140,14 @@ SK_unset_dep() {
 }
 
 SK_expand_dep() {
+  is_met() {
+    true
+  }
+
+  meet() {
+    true
+  }
+
   "$@"
 }
 

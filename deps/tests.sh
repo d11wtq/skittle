@@ -17,4 +17,5 @@ tests() {
   require bin_recursion_prevention
   require pwd_behaviour
   require relative_paths
+  require noops
 }
