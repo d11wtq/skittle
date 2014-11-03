@@ -261,10 +261,10 @@ log_dir() {
 Sometimes you'll want to provide some arbitrary output to the console while
 Skittle is processing the dependency tree. Using `echo` won't work, since
 Skittle gathers all output on `stdout` and `stderr` into the log file. Instead,
-Skittle provides `echolog`, which prints a message to the console and reflects
+Skittle provides `log`, which prints a message to the console and reflects
 which branch of the dependency tree this log output comes from.
 
-You can use `echolog` anywhere inside the main function body of the dep, or
+You can use `log` anywhere inside the main function body of the dep, or
 inside `is_met` and `meet`.
 
 For example, in our generic `user_exists` dep, it might be a good idea to show
@@ -276,7 +276,7 @@ which user the dep is being run for.
 user_exists() {
   username=$1
 
-  echolog "Checking user: $username"
+  log "Checking user: $username"
 
   is_met() {
     id $username
@@ -316,7 +316,7 @@ bash-3.2$ ./skittle log_dir
 bash-3.2$
 ```
 
-Another suggested use of `echolog` is to provide feedback to the user during
+Another suggested use of `log` is to provide feedback to the user during
 long running operations.
 
 ``` bash
@@ -328,7 +328,7 @@ compile_source() {
   }
 
   meet() {
-    echolog "Compiling (may take some time)"
+    log "Compiling (may take some time)"
     make
   }
 }

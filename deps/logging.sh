@@ -1,15 +1,15 @@
 logging() {
   file=$TMP_DIR/logging.txt
 
-  echolog "Inside 'logging'"
+  log "Inside 'logging'"
 
   is_met() {
-    echolog "Checking if file exists"
+    log "Checking if file exists"
     [[ -f $file ]]
   }
 
   meet() {
-    echolog "Creating file"
+    log "Creating file"
     touch $file
   }
 }

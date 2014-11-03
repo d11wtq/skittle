@@ -189,6 +189,11 @@ require() {
 }
 
 echolog() {
+  log "*echolog is deprecated, please use log*"
+  log "$@"
+}
+
+log() {
   SK_draw_log "$@" >&3
 }
 
